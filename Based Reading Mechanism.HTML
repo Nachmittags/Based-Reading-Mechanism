@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<body>
+	Text: <input id='textinput' oninput="text_()">
+	<h1 id="textdisplay"></h1>
+	<br>
+	Mode:
+	Words
+	<input type='checkbox' id='words' onchange="words_()">
+	Phrases
+	<input type='checkbox' id='phrases' onchange="phrases_()" checked=true>
+	<br>
+	Running Mode:
+	Words Per Second:
+	<input type='checkbox' onchange="wpm_()" id="wpm__">
+	Slides Per Second:
+	<input type='checkbox' checked=true onchange="sps_()" id="sps">
+	<br>
+	Rate: 
+	<input type='number' id='rate' value=50>
+	<br>
+	Invert:
+	<select id="invert" onchange="invert_()">
+		<option>
+			Always
+		</option>
+		<option>
+			Never
+		</option>
+		<option>
+			Randomly
+		</option>
+	</select>
+	<div id='randomdiv'> 
+		Chances: 
+		<input id='xz' type='number' oninput="xz_()" value=1>
+		In
+		<input id='zx' type='number' oninput="zx_()" value=2>
+	</div>
+	<br>
+	Inverting mode:
+	<select id="invertmode">
+		<option>
+			Invert whole text
+		</option>
+		<option>
+			Word by word
+		</option>
+	</select>
+	<br>
+	Scramble
+	<input type='checkbox' id="scramble" onchange="textdisplay.innerHTML=im(textdisplay.innerHTML)">
+	<br>
+	L33T Mode:
+	<input type='checkbox' id="l33t" onchange="textdisplay.innerHTML=im(textdisplay.innerHTML)">
+	<br>
+	Running Status:
+<input type='checkbox' id='status'>
+<br>
+	Stop program when:
+	<select id="pp">
+		<option>
+			Backwarding text
+		</option>
+		<option>
+			Forwarding text
+		</option>
+		<option>
+			Both
+		</option>
+		<option>
+			Never
+		</option>
+	</select>
+	<br>
+	<button id='back' class="back" onclick="back_('h')">
+		<---
+		</button>
+		<button id="forward" class="forward" onclick='forward_("h")'>
+			--->
+		</button>
+	<script>
+		randomdiv.style.display="none"
+		const status=document.getElementById("status")
+		const wpm__=document.getElementById("wpm__")
+		const sps=document.getElementById("sps")
+		document.body.addEventListener("keydown", () => {if(event.key=="ArrowRight"){forward.click()} if(event.key=="ArrowLeft"){back.click()} if(event.key=="ArrowUp"){status.checked=status.checked==false?true:false}}  )
+		counter=0
+		text=[]
+		text.index=0
+		text.index2=0
+		function wpm_()
+			{
+			wpm__.checked==true?sps.checked=false:sps.checked=true
+			}
+		function sps_()
+			{
+			sps.checked==true?wpm__.checked=false:wpm__.checked=true
+			}
+		function words_()
+			{
+			phrases.checked=phrases.checked==false?true:false
+			text.index2=0
+			textdisplay.innerHTML=im(output_[text.index].split(" ").filter(x=>x!=="")[text.index2])
+			}
+		function phrases_()
+			{
+			words.checked=words.checked==false?true:false
+			textdisplay.innerHTML=im(output_[text.index])
+			}
+			chances=0
+			function xz_()
+				{
+				nanionv("xz")
+				chances=zx.value*1/xz.value*1
+				}
+			function zx_()
+				{
+				nanionv("zx")
+				chances=zx.value*1/xz.value*1
+				}
+			function nanionv(item)
+		{
+		eval(item).value=(eval(item).value*1).toFixed(0)
+		if(eval(item).value*1<0) eval(item).value=0
+		}
+		function back_(p)
+			{
+			if(phrases.checked==true)
+				{
+				if(text.index>0)
+					{
+					text.index--
+					textdisplay.innerHTML=im(output_[text.index])
+					}
+				}
+			if(words.checked==true)
+				{
+				if(text.index2==0)
+					{
+					if(text.index>0)
+						{
+						text.index--
+						text.index2=output_[text.index].split(" ").filter(x=>x!=="").length-1
+						}
+					}
+					else
+						{
+						text.index2--
+						}
+				textdisplay.innerHTML=im(output_[text.index].split(" ").filter(x=>x!=="")[text.index2])
+				}
+			if(p=="h" && (pp.value=="Both" || pp.value=="Backwarding text")) status.checked=false
+			}
+		function invert_()
+			{
+			if(invert.value=="Always")
+				{
+					randomdiv.style.display="none"
+					chances=1
+				}
+			if(invert.value=="Never")
+				{
+					randomdiv.style.display="none"
+					chances=0
+				}
+			if(invert.value=="Randomly")
+				{
+				randomdiv.style.display="block"
+				}
+			}
+		function forward_(p)
+			{
+			if(phrases.checked==true)
+				{
+				if(text.index<output_.length-1) text.index++
+				textdisplay.innerHTML=im(output_[text.index])
+				}
+			if(words.checked==true)
+				{
+				if(!(output_[text.index].split(" ").filter(x=>x!=="")[text.index2+1]===undefined))
+					{
+					console.log(2)
+					text.index2++
+					}
+					else
+						{
+						if(text.index<output_.length-1)
+							{
+							text.index++;
+							text.index2=0
+							}
+						}
+				textdisplay.innerHTML=im(output_[text.index].split(" ").filter(x=>x!=="")[text.index2])
+				}
+			if(p=="h" && (pp.value=="Both"||pp.value=="Forwarding text")) status.checked=false
+			}
+		function text_()
+			{
+			let a=[",",".",";","?"]
+			output_=[]
+			output=""
+			x=0
+			for(; x<textinput.value.length; x++)
+				{
+				output+=textinput.value.charAt(x)
+				if(a.includes(textinput.value.charAt(x)))
+					{		
+					output_.push(output)
+					output=""
+					}
+				}
+			while(textinput.value.charAt(x)!=="")
+				{
+				output+=textinput.value.charAt(x)
+				x++
+				}
+			output_.push(output)
+			textdisplay.innerHTML=im(output_[text.index])
+			}
+		function im(mmm)
+			{
+			m=chances
+			if(chances!==0)
+			{
+			if(Number.isInteger(m)==false)
+				{
+				x=2
+				while(Number.isInteger(chances*x)==false)
+					{
+					x++
+					}
+				mmmm=[]
+				for(let z=0; z<x; z++)
+					{
+					let mm=Math.ceil((Math.random()*(chances*x)+1)-1)
+					while(mmmm.includes(mm))
+						{
+						mm=Math.ceil((Math.random()*(chances*x)+1)-1)
+						}
+					mmmm.push(mm)
+					}
+				mmmmm=Math.ceil((Math.random()*(chances*x)+1)-1)
+				if(mmmm.includes(mmmmm))
+					{
+					if(invertmode.value=="Invert whole text")
+						{
+						mmm=mmm.split("").reverse().join("")
+						}
+					if(invertmode.value=="Word by word")
+						{
+						mmm=mmm.split(" ").map(z=>z.split("").reverse().join("")).join(" ")	
+						}
+					}
+				}
+				else
+					{
+					let mm=Math.ceil((Math.random()*(chances)+1)-1)
+					if(mm==chances)
+						{
+							if(invertmode.value=="Invert whole text")
+							{
+							mmm=mmm.split("").reverse().join("")
+							}
+						if(invertmode.value=="Word by word")
+							{
+							mmm=mmm.split(" ").map(z=>z.split("").reverse().join("")).join(" ")
+							}
+						}
+					}
+				}
+
+			if(scramble.checked==true) mmm=scramble_(mmm)
+			if(l33t.checked==true) mmm=l33t_(mmm)
+			return mmm
+			}
+		function scramble_(m)
+			{
+			cm=[]
+			for(let x=0; x<m.length; x++)
+				{
+			mm=Math.floor((Math.random()*m.length+1)-1)
+			while(cm.includes(mm))
+				{
+				mm=Math.floor((Math.random()*m.length+1)-1)
+				}
+			cm.push(mm)
+				}
+				return cm.map(x=>m.charAt(x)).join("")
+			}
+		function l33t_(m)
+			{
+			b=["a","e","i","o"]
+			c=[4,5,1,0]
+			let output=""
+			for(let x=0; x<m.length; x++)
+				{
+				if(b.includes(m.charAt(x).toLowerCase()))
+					{
+					output+=(c[b.indexOf(m.charAt(x).toLowerCase())])
+					}
+					else
+						{
+						output+=(m.charAt(x))
+						}						
+				}
+			return output
+			}
+		setInterval(
+			function()
+				{
+				counter++
+				if(counter>=18333/rate.value*
+					(
+					function()
+						{
+						if(sps.checked==true)
+							{
+							return 1
+							}
+						if(wpm__.checked==true)
+							{
+							if(words.checked==true)
+								{
+								return 1
+								}
+							if(phrases.checked==true)
+								{
+								return output_[text.index].split(" ").filter(x=>x!=="").length
+								}
+							}
+						}
+					)())
+					{		
+					if(document.getElementById("status").checked==true)
+						{
+						forward_()
+						}
+					counter=0
+					}	
+				}
+			,1)
+	</script>
+</body>
+</html>
